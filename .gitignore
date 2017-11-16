@@ -68,3 +68,5 @@
 	
 
 	# End of https://www.gitignore.io/api/java,macos,code-java
+/target/
+/nbproject/
