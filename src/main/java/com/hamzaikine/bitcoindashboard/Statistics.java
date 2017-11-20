@@ -34,7 +34,7 @@ public class Statistics {
         }
 
         String response = HttpClient.getInstance().get("stats", params);
-        return null;   //new StatisticsResponse(response)
+        return new StatisticsResponse(response);   
     }
     
     
