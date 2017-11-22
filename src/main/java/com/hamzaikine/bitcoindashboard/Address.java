@@ -48,5 +48,49 @@ public class Address {
     }
     
     
+     /**
+     * @return Base58Check representation of the address
+     */
+    public String getAddress () {
+        return address;
+    }
+    
+    
+    /**
+     * @return Total amount received (in satoshi)
+     */
+    public long getTotalReceived () {
+        return totalReceived;
+    }
+
+    /**
+     * @return Total amount sent (in satoshi)
+     */
+    public long getTotalSent () {
+        return totalSent;
+    }
+
+    /**
+     * @return Final balance of the address (in satoshi)
+     */
+    public long getFinalBalance () {
+        return finalBalance;
+    }
+    
+    
+     /**
+     * @return Original number of transactions before filtering and limiting
+     */
+    public int getTxCount () {
+        return txCount;
+    }
+
+    /**
+     * @return List of transactions associated with this address
+     */
+    public List<Transaction> getTransactions () {
+        return transactions;
+    }
+    
     
 }

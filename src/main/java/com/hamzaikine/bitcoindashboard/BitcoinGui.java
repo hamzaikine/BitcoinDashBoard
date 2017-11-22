@@ -3,9 +3,6 @@ package com.hamzaikine.bitcoindashboard;
 
 
 import info.blockchain.api.APIException;
-import info.blockchain.api.blockexplorer.entity.Address;
-import info.blockchain.api.exchangerates.*;
-import info.blockchain.api.statistics.Chart;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -38,14 +35,14 @@ public class BitcoinGui {
              Address ad;
              b = be.getBlock("0000000000000000005858d63912f89e244f83d138b4e0b00b54430b2877a57c");
              //sb = be.getLatestBlock();
-             //ad =be.getAddress("3EhLZarJUNSfV6TWMZY1Nh5mi3FMsdHa5U");
+             ad =be.getAddress("3EhLZarJUNSfV6TWMZY1Nh5mi3FMsdHa5U",null,null,null);
               
              sr = s.getStats();
      
              System.out.println("blockHeight:" + b.getHeight());
              
-            // System.out.println("#blockheight:" + sb.getHeight());
-              System.out.println("1BTC = " + sr.getMarketPriceUSD() + "$USD.");
+             System.out.println("Address No. Transaction:" + ad.getTxCount());
+             System.out.println("1BTC = " + sr.getMarketPriceUSD() + "$USD.");
         } catch (APIException ex) {
             Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
