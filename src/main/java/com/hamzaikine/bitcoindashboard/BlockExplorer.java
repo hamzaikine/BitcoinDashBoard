@@ -79,5 +79,17 @@ public class BlockExplorer {
 
         return params;
   }
+     
+      /**
+     * Gets the latest block on the main chain (simplified representation).
+     *
+     * @return An instance of the {@link LatestBlock} class
+     * @throws APIException If the server returns an error
+     */
+    public LatestBlock getLatestBlock () throws APIException, IOException {
+        String response = HttpClient.getInstance().get("latestblock", buildBasicRequest());
+        JsonObject blockObj = new JsonParser().parse(response).getAsJsonObject();
+        return new LatestBlock(blockObj);
+    }
     
 }

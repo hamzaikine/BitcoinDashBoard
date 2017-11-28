@@ -33,13 +33,13 @@ public class BitcoinGui {
              BlockExplorer be = new BlockExplorer();
              Block b;
              Address ad;
-             b = be.getBlock("0000000000000000005858d63912f89e244f83d138b4e0b00b54430b2877a57c");
-             //sb = be.getLatestBlock();
+             //b = be.getBlock("0000000000000000005858d63912f89e244f83d138b4e0b00b54430b2877a57c");
+             b = be.getLatestBlock();
              ad =be.getAddress("3EhLZarJUNSfV6TWMZY1Nh5mi3FMsdHa5U",null,null,null);
               
              sr = s.getStats();
      
-             System.out.println("blockHeight:" + b.getHeight());
+             System.out.println("Latestblock:" + b.getHeight());
              
              System.out.println("Address No. Transaction:" + ad.getTxCount());
              System.out.println("1BTC = " + sr.getMarketPriceUSD() + "$USD.");

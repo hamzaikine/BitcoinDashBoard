@@ -14,6 +14,8 @@ public class Block {
     private long time;
     private long height;
     private long size;
+    private String hash;
+    private boolean mainChain;
     private String previousBlockHash;
     private long receivedTime;
     private List<Transaction> transactions;
@@ -29,6 +31,12 @@ public class Block {
         
     }
     
+    public Block (long height, String hash, long time, boolean mainChain) {
+        this.height = height;
+        this.hash = hash;
+        this.time = time;
+        this.mainChain = mainChain;
+    }
     
     public Block (JsonObject b) {
         this.height = b.get("height").getAsLong();
@@ -44,14 +52,47 @@ public class Block {
     }
     
     
+    /**
+     * @return the block hash
+     */
+    
+    public String getHash(){
+        return hash;
+    }
+    
+    /**
+     * @return Serialized size of this block
+     */
+    public long getSize () {
+        return size;
+    }
+    
+    
      public long getHeight () {
         return height;
     }
      
+     /**
+     * @return The time this block was received by Blockchain.info
+     */
+    public long getReceivedTime () {
+        return receivedTime;
+    }
      
      
+     /**
+     * @return Hash of the previous block
+     */
+    public String getPreviousBlockHash () {
+        return previousBlockHash;
+    }
      
-     
-     
+     /**
+     * @return Transactions in the block
+     */
+    public List<Transaction> getTransactions () {
+        return transactions;
+    }
+    
     
 }

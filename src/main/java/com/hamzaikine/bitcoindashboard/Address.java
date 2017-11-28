@@ -31,14 +31,14 @@ public class Address {
 
     public Address (JsonObject a) {
 
-        this(
-                a.has("hash160") ? a.get("hash160").getAsString() : "",
-                a.has("address") ? a.get("address").getAsString() : "",
-                a.has("total_received") ? a.get("total_received").getAsLong() : 0,
-                a.has("total_sent") ? a.get("total_sent").getAsLong() : 0,
-                a.has("final_balance") ? a.get("final_balance").getAsLong() : 0,
-                a.has("n_tx") ? a.get("n_tx").getAsInt() : 0,
-                null);
+        
+               this.hash160 = a.has("hash160") ? a.get("hash160").getAsString() : "";
+               this.address = a.has("address") ? a.get("address").getAsString() : "";
+               this.totalReceived = a.has("total_received") ? a.get("total_received").getAsLong() : 0;
+               this.totalSent = a.has("total_sent") ? a.get("total_sent").getAsLong() : 0;
+               this.finalBalance = a.has("final_balance") ? a.get("final_balance").getAsLong() : 0;
+               this.txCount = a.has("n_tx") ? a.get("n_tx").getAsInt() : 0;
+               this.transactions = null;
 
         transactions = new ArrayList<Transaction>();
         for (JsonElement txElem : a.get("txs").getAsJsonArray()) {
