@@ -48,8 +48,34 @@ public class Transaction {
         }
     }
     
+    /**
+     * @return Transaction hash
+     */
+    public String getHash () {
+        return hash;
+    }
+    
+    /**
+     * @return Serialized size of the transaction
+     */
+    public long getSize () {
+        return size;
+    }
+    
+    /**
+     * @return List of inputs
+     */
+    public List<Input> getInputs () {
+        return inputs;
+    }
     
     
+     /**
+     * @return List of outputs
+     */
+    public List<Output> getOutputs () {
+        return outputs;
+    }
     
     
 }

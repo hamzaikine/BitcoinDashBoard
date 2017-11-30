@@ -16,6 +16,7 @@ public class Block {
     private long size;
     private String hash;
     private boolean mainChain;
+    private long n_tx;
     private String previousBlockHash;
     private long receivedTime;
     private List<Transaction> transactions;
@@ -44,13 +45,19 @@ public class Block {
         this.previousBlockHash = b.get("prev_block").getAsString();
         this.size = b.get("size").getAsLong();
         this.receivedTime = (b.has("received_time") ? b.get("received_time").getAsLong() : b.get("time").getAsLong());
-
+        this.n_tx = b.get("n_tx").getAsLong();
         transactions = new ArrayList<Transaction>();
         for (JsonElement txElem : b.get("tx").getAsJsonArray()) {
             transactions.add(new Transaction(txElem.getAsJsonObject(), getHeight(), false));
         }
     }
     
+    /**
+     * @return number of transactions in a block
+     */
+    public long getNTx(){
+            return n_tx;
+    }
     
     /**
      * @return the block hash
