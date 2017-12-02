@@ -1,6 +1,7 @@
 package com.hamzaikine.bitcoindashboard;
 
 import info.blockchain.api.APIException;
+import info.blockchain.api.blockexplorer.entity.FilterType;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -131,7 +132,7 @@ public class BitcoinGui extends Application {
         GridPane.setConstraints(address, 1, 2);
 
         //address search button
-        Button address_button = new Button("find");
+        Button address_button = new Button("Find");
         GridPane.setConstraints(address_button, 2, 2);
 
         //block hash Input
@@ -140,7 +141,7 @@ public class BitcoinGui extends Application {
         GridPane.setConstraints(block_hash, 1, 3);
 
         //block search button
-        Button block_button = new Button("find");
+        Button block_button = new Button("Find");
         GridPane.setConstraints(block_button, 2, 3);
 
         //adding a textArea
@@ -181,6 +182,38 @@ public class BitcoinGui extends Application {
                 }
             }
         });
+        
+        //Setting an action for the address search button
+        address_button.setOnAction(new EventHandler<ActionEvent>() {
+        
+            
+            @Override
+            public void handle(ActionEvent e) {
+                if(address.getText() != null && !address.getText().trim().isEmpty()){
+                    Address ad = new Address(null,address.getText(),0L,0L,0L,0,null);
+                    BlockExplorer be = new BlockExplorer();
+                    
+                    try {
+                        ad = be.getAddress(address.getText(), null, null, null);
+                    } catch (APIException ex) {
+                        textArea.setText("Invalid Address.\n");
+                        Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    lineChart.setVisible(false);
+                    textArea.setVisible(true);
+                    textArea.setText("\nNo. Transactions:" + ad.getTxCount() +"\nTotal Received:" + ad.getTotalReceived()
+                            + "\nTotal Sent:"+ ad.getTotalSent() + "\nFinalBalance" + ad.getFinalBalance());
+                   
+                    
+                }
+                
+                
+            }
+            
+         });
 
         //
         Scene scene = new Scene(grid);
@@ -201,7 +234,34 @@ public class BitcoinGui extends Application {
                 lineChart.setVisible(true);
             }
         });
-
+        
+        //Display exchange rate for different Currencies
+        MenuItem list = new MenuItem("Currency List");
+        list.setOnAction(new EventHandler<ActionEvent>(){
+             public void handle(ActionEvent t) {
+                 lineChart.setVisible(false);
+                 ExchangeRate er = new ExchangeRate();
+                 Map<String,Currency> mp = new HashMap<String,Currency>();
+                 try {
+                     mp = er.getTicker();       //get list from the server
+                 } catch (APIException ex) {
+                     Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+                 } catch (IOException ex) {
+                     Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+                 
+                 Iterator<Map.Entry<String, Currency>> mapIterator = mp.entrySet().iterator();
+                 while (mapIterator.hasNext()) {
+                     Map.Entry<String, Currency> entry = mapIterator.next();
+                     textArea.setText(entry.getKey() + ": " + entry.getValue().getSell());
+                 }
+                 
+             }
+        
+        
+        
+                     });
+        
         menuView.getItems().addAll(add);
 
         menuBar.getMenus().addAll(menuView);
