@@ -208,6 +208,10 @@ public class BitcoinGui extends Application {
                             + "\nTotal Sent:"+ ad.getTotalSent() + "\nFinalBalance" + ad.getFinalBalance());
                    
                     
+                }else {
+                    textArea.setVisible(true);
+                    lineChart.setVisible(false);
+                    textArea.setText("Please enter an address.\n");
                 }
                 
                 
@@ -239,6 +243,7 @@ public class BitcoinGui extends Application {
         MenuItem list = new MenuItem("Currency List");
         list.setOnAction(new EventHandler<ActionEvent>(){
              public void handle(ActionEvent t) {
+                 textArea.setVisible(true);
                  lineChart.setVisible(false);
                  ExchangeRate er = new ExchangeRate();
                  Map<String,Currency> mp = new HashMap<String,Currency>();
@@ -253,7 +258,7 @@ public class BitcoinGui extends Application {
                  Iterator<Map.Entry<String, Currency>> mapIterator = mp.entrySet().iterator();
                  while (mapIterator.hasNext()) {
                      Map.Entry<String, Currency> entry = mapIterator.next();
-                     textArea.setText(entry.getKey() + ": " + entry.getValue().getSell());
+                     textArea.appendText(entry.getKey() + ": " + entry.getValue().getSell()+"\n");
                  }
                  
              }
@@ -262,7 +267,7 @@ public class BitcoinGui extends Application {
         
                      });
         
-        menuView.getItems().addAll(add);
+        menuView.getItems().addAll(add,list);
 
         menuBar.getMenus().addAll(menuView);
 
