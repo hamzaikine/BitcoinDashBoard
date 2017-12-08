@@ -1,9 +1,16 @@
 package com.hamzaikine.bitcoindashboard;
 
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import info.blockchain.api.APIException;
-import info.blockchain.api.blockexplorer.entity.FilterType;
+import info.blockchain.api.HttpClient;
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,7 +22,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -28,19 +35,15 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.ImagePattern;
+import javafx.scene.text.*;
 
 /**
  *
@@ -48,32 +51,55 @@ import javafx.scene.paint.ImagePattern;
  */
 public class BitcoinGui extends Application {
 
+    LineChart<String, Number> chart;
+    XYChart.Series<String, Number> series;
+
     @Override
     public void start(Stage primaryStage) {
+
         primaryStage.setTitle("BitcoinDashboard");
 
         /**
          * Line Chart
          */
-        NumberAxis xAxis = new NumberAxis();
+        final CategoryAxis xAxis = new CategoryAxis();
 
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("USD");
+        chart = new LineChart<String, Number>(xAxis, yAxis);
 
-        LineChart lineChart = new LineChart(xAxis, yAxis);
-        lineChart.setTitle("Market Price (USD)");
-        XYChart.Series dataSeries1 = new XYChart.Series();
-        dataSeries1.setName("Average USD market price across major bitcoin exchanges.");
+        series = new XYChart.Series<String, Number>();
+        series.setName("Average USD market price across major bitcoin exchanges.");
 
-        dataSeries1.getData().add(new XYChart.Data(1, 567));
-        dataSeries1.getData().add(new XYChart.Data(5, 612));
-        dataSeries1.getData().add(new XYChart.Data(10, 800));
-        dataSeries1.getData().add(new XYChart.Data(20, 780));
-        dataSeries1.getData().add(new XYChart.Data(40, 810));
-        dataSeries1.getData().add(new XYChart.Data(80, 850));
+        try {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("format", "json");
+            String response;
+            response = HttpClient.getInstance().get("charts/" + "market-price", params);
+            JsonObject chartJson = new JsonParser().parse(response).getAsJsonObject();
 
-        lineChart.getData().add(dataSeries1);
-        lineChart.setVisible(false);
+            // getting address
+            JsonArray values = (JsonArray) chartJson.get("values");
+
+            JsonElement element = values.get(0);
+
+            //JsonObject object = element.getAsJsonObject();
+            for (JsonElement point : values) {
+                JsonObject object = point.getAsJsonObject();
+                long unix = object.get("x").getAsLong();
+                Date date = new Date(unix * 1000L);
+                DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                series.getData().add(new XYChart.Data(dateFormat.format(date), object.get("y").getAsDouble()));
+            }
+
+        } catch (APIException ex) {
+            Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        chart.getData().add(series);
+        chart.setVisible(false);
 
         /**
          * *********************************************************
@@ -93,8 +119,10 @@ public class BitcoinGui extends Application {
         grid.getColumnConstraints().addAll(col1, col2, col3);
 
         //grid.getColumnConstraints().add(new ColumnConstraints(210)); // column 0 is 210 wide
-        GridPane.setConstraints(lineChart, 1, 4);
-
+        GridPane.setConstraints(chart, 1, 4);
+        /**
+         * *************************************************************************
+         */
         //load image
         Image image = new Image("/pic/Bitcoin.jpg");
 
@@ -106,6 +134,9 @@ public class BitcoinGui extends Application {
         grid.setBackground(new Background(bgImg));
         Label title = new Label();
 
+        /**
+         * *************************************************************************
+         */
         // display the current btc price
         try {
             Statistics s = new Statistics();
@@ -125,8 +156,11 @@ public class BitcoinGui extends Application {
             Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        /**
+         * *************************************************************************
+         */
         //GridPane.setMargin(text, new Insets(20, 1, 50, 1));
-        //address Input
+        //creating buttons and textfields
         TextField address = new TextField();
         address.setPromptText("Bitcoin Address");
         GridPane.setConstraints(address, 1, 2);
@@ -157,7 +191,7 @@ public class BitcoinGui extends Application {
             @Override
             public void handle(ActionEvent e) {
 
-                // b = be.getBlock("0000000000000000005858d63912f89e244f83d138b4e0b00b54430b2877a57c");
+                
                 if (block_hash.getText() != null && !block_hash.getText().trim().isEmpty()) {
                     Block b = null;
                     BlockExplorer be = new BlockExplorer();
@@ -169,30 +203,31 @@ public class BitcoinGui extends Application {
                     } catch (IOException ex) {
                         Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
+                   
+                    long size = b.getSize()/1000;
+                    
+                    chart.setVisible(false);
                     textArea.setVisible(true);
-                    lineChart.setVisible(false);
-                    textArea.setText("Block Height: " + b.getHeight() + "\n" + "Block size: " + b.getSize() + "\nPrevious Block hash:"
-                            + b.getPreviousBlockHash() + "\n" + "No. Transaction in block:" + b.getNTx());
+                    textArea.setText("Block Height:\t" + b.getHeight() + "\n" + "Block size:\t" + size +" KB"+ "\nPrevious Block hash:\t"
+                            + b.getPreviousBlockHash() + "\n" + "No. Transaction in block:\t" + b.getNTx());
 
                 } else {
                     textArea.setVisible(true);
-                    lineChart.setVisible(false);
+                    chart.setVisible(false);
                     textArea.setText("Please enter a block hash.\n");
                 }
             }
         });
-        
+
         //Setting an action for the address search button
         address_button.setOnAction(new EventHandler<ActionEvent>() {
-        
-            
+
             @Override
             public void handle(ActionEvent e) {
-                if(address.getText() != null && !address.getText().trim().isEmpty()){
-                    Address ad = new Address(null,address.getText(),0L,0L,0L,0,null);
+                if (address.getText() != null && !address.getText().trim().isEmpty()) {
+                    Address ad = new Address(null, address.getText(), 0L, 0L, 0L, 0, null);
                     BlockExplorer be = new BlockExplorer();
-                    
+
                     try {
                         ad = be.getAddress(address.getText(), null, null, null);
                     } catch (APIException ex) {
@@ -202,24 +237,26 @@ public class BitcoinGui extends Application {
                         Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
-                    lineChart.setVisible(false);
+                    chart.setVisible(false);
                     textArea.setVisible(true);
-                    textArea.setText("\nNo. Transactions:" + ad.getTxCount() +"\nTotal Received:" + ad.getTotalReceived()
-                            + "\nTotal Sent:"+ ad.getTotalSent() + "\nFinalBalance" + ad.getFinalBalance());
-                   
-                    
-                }else {
+                    long tx = ad.getTxCount();
+                    long totRecv = ad.getTotalReceived()/100000000;
+                    long totSent = ad.getTotalSent()/100000000;
+                    long FinalBal = ad.getFinalBalance()/100000000;
+                    textArea.setText("No. Transactions:\t" + tx + "\nTotal Received:\t" + totRecv
+                            + " BTC\nTotal Sent:\t" + totSent+ " BTC\nFinalBalance:\t" + FinalBal +" BTC");
+
+                } else {
                     textArea.setVisible(true);
-                    lineChart.setVisible(false);
+                    chart.setVisible(false);
                     textArea.setText("Please enter an address.\n");
                 }
-                
-                
-            }
-            
-         });
 
-        //
+            }
+
+        });
+
+        //the scene
         Scene scene = new Scene(grid);
         primaryStage.setWidth(610);
         primaryStage.setHeight(400);
@@ -232,47 +269,52 @@ public class BitcoinGui extends Application {
         // --- Menu View
         Menu menuView = new Menu("View");
         MenuItem add = new MenuItem("Chart");
+        /**
+         * *************************************************************************
+         */
         add.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
+
                 textArea.setVisible(false);
-                lineChart.setVisible(true);
+                chart.setVisible(true);
             }
         });
-        
+
+        /**
+         * *************************************************************************
+         */
         //Display exchange rate for different Currencies
-        MenuItem list = new MenuItem("Currency List");
-        list.setOnAction(new EventHandler<ActionEvent>(){
-             public void handle(ActionEvent t) {
-                 textArea.setVisible(true);
-                 lineChart.setVisible(false);
-                 ExchangeRate er = new ExchangeRate();
-                 Map<String,Currency> mp = new HashMap<String,Currency>();
-                 try {
-                     mp = er.getTicker();       //get list from the server
-                 } catch (APIException ex) {
-                     Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
-                 } catch (IOException ex) {
-                     Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
-                 }
-                 
-                 Iterator<Map.Entry<String, Currency>> mapIterator = mp.entrySet().iterator();
-                 while (mapIterator.hasNext()) {
-                     Map.Entry<String, Currency> entry = mapIterator.next();
-                     textArea.appendText(entry.getKey() + ": " + entry.getValue().getSell()+"\n");
-                 }
-                 
-             }
-        
-        
-        
-                     });
-        
-        menuView.getItems().addAll(add,list);
+        MenuItem clist = new MenuItem("Currency List");
+        clist.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                textArea.setVisible(true);
+                chart.setVisible(false);
+                ExchangeRate er = new ExchangeRate();
+                Map<String, Currency> mp = new HashMap<String, Currency>();
+                try {
+                    mp = er.getTicker();       //get list from the server
+                } catch (APIException ex) {
+                    Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                textArea.appendText("\n\n\n");
+                Iterator<Map.Entry<String, Currency>> mapIterator = mp.entrySet().iterator();
+                while (mapIterator.hasNext()) {
+                    Map.Entry<String, Currency> entry = mapIterator.next();
+                    textArea.appendText(entry.getKey() + ": " + entry.getValue().getSell() + "\n");
+                }
+
+            }
+
+        });
+
+        menuView.getItems().addAll(add, clist);
 
         menuBar.getMenus().addAll(menuView);
 
         //Add everything to grid
-        grid.getChildren().addAll(title, textArea, address, block_hash, address_button, block_button, menuBar, lineChart);
+        grid.getChildren().addAll(title, textArea, address, block_hash, address_button, block_button, menuBar, chart);
 
         primaryStage.show();
 
@@ -282,46 +324,6 @@ public class BitcoinGui extends Application {
 
         launch(argv);
 
-//        Currency cr;
-//        //ExchangeRates er = new ExchangeRates();
-//        Map<String,Currency> mp = new HashMap<String,Currency>();
-//        try {
-//         //    mp = er.getTicker();
-//
-//         //   BigDecimal e = er.toBTC("USD", BigDecimal.valueOf(1000));
-//           //  System.out.println("$" + BigDecimal.valueOf(1000) + " in BTC:" + e );
-//
-//             Statistics s = new Statistics();
-//             StatisticsResponse sr;
-//             BlockExplorer be = new BlockExplorer();
-//             Block b;
-//             Address ad;
-//             //b = be.getBlock("0000000000000000005858d63912f89e244f83d138b4e0b00b54430b2877a57c");
-//             b = be.getLatestBlock();
-//             ad =be.getAddress("3EhLZarJUNSfV6TWMZY1Nh5mi3FMsdHa5U",null,null,null);
-//
-//             sr = s.getStats();
-//
-//             System.out.println("Latestblock:" + b.getHeight());
-//
-//             System.out.println("Address No. Transaction:" + ad.getTxCount());
-//             System.out.println("1BTC = " + sr.getMarketPriceUSD() + "$USD.");
-//        } catch (APIException ex) {
-//            Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IOException ex) {
-//            Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-////        Iterator<Map.Entry<String, Currency>> mapIterator = mp.entrySet().iterator();
-////        while (mapIterator.hasNext()) {
-////            Map.Entry<String, Currency> entry = mapIterator.next();
-////            System.out.println(entry.getKey() + ": " + entry.getValue().getSell());
-////
-////        }
-//
-//
-//
-//
     }
 
 }

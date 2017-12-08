@@ -1,8 +1,12 @@
 
 package com.hamzaikine.bitcoindashboard;
 
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import info.blockchain.api.APIException;
 import info.blockchain.api.HttpClient;
+import info.blockchain.api.statistics.Chart;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +40,9 @@ public class Statistics {
         String response = HttpClient.getInstance().get("stats", params);
         return new StatisticsResponse(response);   
     }
+    
+    
+    
     
     
     
