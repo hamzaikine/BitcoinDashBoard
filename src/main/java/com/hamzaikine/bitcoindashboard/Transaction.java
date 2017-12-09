@@ -1,4 +1,3 @@
-
 package com.hamzaikine.bitcoindashboard;
 
 import com.google.gson.JsonElement;
@@ -13,6 +12,7 @@ import java.util.List;
  * @author hamzaikine
  */
 public class Transaction {
+
     private boolean doubleSpend;
     private long time;
     private long blockHeight;
@@ -20,15 +20,13 @@ public class Transaction {
     private String hash;
     private List<Input> inputs;
     private List<Output> outputs;
-    
-    
-    public Transaction (JsonObject t) {
+
+    public Transaction(JsonObject t) {
         this(t, t.has("block_height") ? t.get("block_height").getAsLong() : -1,
-            t.has("double_spend") ? t.get("double_spend").getAsBoolean() : false);
+                t.has("double_spend") ? t.get("double_spend").getAsBoolean() : false);
     }
-    
-    
-    public Transaction (JsonObject t, long blockHeight, boolean doubleSpend) {
+
+    public Transaction(JsonObject t, long blockHeight, boolean doubleSpend) {
         this.doubleSpend = doubleSpend;
         this.blockHeight = blockHeight;
         this.time = t.get("time").getAsLong();
@@ -47,35 +45,33 @@ public class Transaction {
             outputs.add(new Output(outputElem.getAsJsonObject()));
         }
     }
-    
+
     /**
      * @return Transaction hash
      */
-    public String getHash () {
+    public String getHash() {
         return hash;
     }
-    
+
     /**
      * @return Serialized size of the transaction
      */
-    public long getSize () {
+    public long getSize() {
         return size;
     }
-    
+
     /**
      * @return List of inputs
      */
-    public List<Input> getInputs () {
+    public List<Input> getInputs() {
         return inputs;
     }
-    
-    
-     /**
+
+    /**
      * @return List of outputs
      */
-    public List<Output> getOutputs () {
+    public List<Output> getOutputs() {
         return outputs;
     }
-    
-    
+
 }

@@ -1,6 +1,5 @@
 package com.hamzaikine.bitcoindashboard;
 
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -191,10 +190,10 @@ public class BitcoinGui extends Application {
             @Override
             public void handle(ActionEvent e) {
                 BlockExplorer be = new BlockExplorer();
-                
+
                 if (block_hash.getText() != null && !block_hash.getText().trim().isEmpty()) {
                     Block b = null;
-                    
+
                     try {
                         b = be.getBlock(block_hash.getText());
                     } catch (APIException ex) {
@@ -203,13 +202,13 @@ public class BitcoinGui extends Application {
                     } catch (IOException ex) {
                         Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                   
+
                     long size = b.getSize();
-                    
+
                     chart.setVisible(false);
                     textArea.setVisible(true);
-                    textArea.setText("Block Height:\t" + b.getHeight() + "\n" + "Block size:\t" + size/1000 +" KB"+ "\nPrevious Block hash:\t"
-                            + b.getPreviousBlockHash() + "\n" + "No. Transaction in block:\t" + b.getNTx() +"\nReceived Time:\t"+ new Date(b.getReceivedTime()*1000L));
+                    textArea.setText("Block Height:\t" + b.getHeight() + "\n" + "Block size:\t" + size / 1000 + " KB" + "\nPrevious Block hash:\t"
+                            + b.getPreviousBlockHash() + "\n" + "No. Transaction in block:\t" + b.getNTx() + "\nReceived Time:\t" + new Date(b.getReceivedTime() * 1000L));
 
                 } else {
                     chart.setVisible(false);
@@ -217,16 +216,14 @@ public class BitcoinGui extends Application {
                     try {
                         LatestBlock lb = be.getLatestBlock();
                         textArea.setText("Block Height:\t" + lb.getHeight() + "\nBlock hash:\t"
-                            + lb.getHash() + "\nBlock Index:\t"+ lb.getIndex() +"\nReceived Time:\t"+ new Date(lb.getTime()*1000L) +"\n");
-                            
+                                + lb.getHash() + "\nBlock Index:\t" + lb.getIndex() + "\nReceived Time:\t" + new Date(lb.getTime() * 1000L) + "\n");
+
                     } catch (APIException ex) {
                         Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
                         Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
-                    
-                    
+
                 }
             }
         });
@@ -248,15 +245,16 @@ public class BitcoinGui extends Application {
                     } catch (IOException ex) {
                         Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
                     chart.setVisible(false);
                     textArea.setVisible(true);
-                    long tx = ad.getTxCount();
-                    long totRecv = ad.getTotalReceived()/100000000;
-                    long totSent = ad.getTotalSent()/100000000;
-                    long FinalBal = ad.getFinalBalance()/100000000;
+                    int tx = ad.getTxCount();
+                    double totRecv = ad.getTotalReceived()/100000000;
+                    double totSent = ad.getTotalSent()/100000000;
+                    double FinalBal = ad.getFinalBalance()/100000000;
+                    
                     textArea.setText("No. Transactions:\t" + tx + "\nTotal Received:\t" + totRecv
-                            + " BTC\nTotal Sent:\t" + totSent+ " BTC\nFinalBalance:\t" + FinalBal +" BTC");
+                            + " BTC\nTotal Sent:\t" + totSent + " BTC\nFinalBalance:\t" + FinalBal + " BTC");
 
                 } else {
                     textArea.setVisible(true);
@@ -310,7 +308,7 @@ public class BitcoinGui extends Application {
                 } catch (IOException ex) {
                     Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                textArea.appendText("\n\n\n");
+                textArea.clear();
                 Iterator<Map.Entry<String, Currency>> mapIterator = mp.entrySet().iterator();
                 while (mapIterator.hasNext()) {
                     Map.Entry<String, Currency> entry = mapIterator.next();

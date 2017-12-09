@@ -1,4 +1,3 @@
-
 package com.hamzaikine.bitcoindashboard;
 
 import com.google.gson.JsonElement;
@@ -11,15 +10,16 @@ import java.util.List;
  * @author hamzaikine
  */
 public class Address {
+
     private String hash160;
     private String address;
-    private long totalReceived;
-    private long totalSent;
-    private long finalBalance;
+    private double totalReceived;
+    private double totalSent;
+    private double finalBalance;
     private int txCount;
     private List<Transaction> transactions;
 
-    public Address (String hash160, String address, long totalReceived, long totalSent, long finalBalance, int txCount, List<Transaction> transactions) {
+    public Address(String hash160, String address, long totalReceived, long totalSent, long finalBalance, int txCount, List<Transaction> transactions) {
         this.hash160 = hash160;
         this.address = address;
         this.totalReceived = totalReceived;
@@ -29,16 +29,15 @@ public class Address {
         this.transactions = transactions;
     }
 
-    public Address (JsonObject a) {
+    public Address(JsonObject a) {
 
-        
-               this.hash160 = a.has("hash160") ? a.get("hash160").getAsString() : "";
-               this.address = a.has("address") ? a.get("address").getAsString() : "";
-               this.totalReceived = a.has("total_received") ? a.get("total_received").getAsLong() : 0;
-               this.totalSent = a.has("total_sent") ? a.get("total_sent").getAsLong() : 0;
-               this.finalBalance = a.has("final_balance") ? a.get("final_balance").getAsLong() : 0;
-               this.txCount = a.has("n_tx") ? a.get("n_tx").getAsInt() : 0;
-               this.transactions = null;
+        this.hash160 = a.has("hash160") ? a.get("hash160").getAsString() : "";
+        this.address = a.has("address") ? a.get("address").getAsString() : "";
+        this.totalReceived = a.has("total_received") ? a.get("total_received").getAsDouble() : 0;
+        this.totalSent = a.has("total_sent") ? a.get("total_sent").getAsDouble() : 0;
+        this.finalBalance = a.has("final_balance") ? a.get("final_balance").getAsDouble() : 0;
+        this.txCount = a.has("n_tx") ? a.get("n_tx").getAsInt() : 0;
+        this.transactions = null;
 
         transactions = new ArrayList<Transaction>();
         for (JsonElement txElem : a.get("txs").getAsJsonArray()) {
@@ -46,51 +45,47 @@ public class Address {
             transactions.add(new Transaction(addrObj));
         }
     }
-    
-    
-     /**
+
+    /**
      * @return Base58Check representation of the address
      */
-    public String getAddress () {
+    public String getAddress() {
         return address;
     }
-    
-    
+
     /**
      * @return Total amount received (in satoshi)
      */
-    public long getTotalReceived () {
+    public double getTotalReceived() {
         return totalReceived;
     }
 
     /**
      * @return Total amount sent (in satoshi)
      */
-    public long getTotalSent () {
+    public double getTotalSent() {
         return totalSent;
     }
 
     /**
      * @return Final balance of the address (in satoshi)
      */
-    public long getFinalBalance () {
+    public double getFinalBalance() {
         return finalBalance;
     }
-    
-    
-     /**
+
+    /**
      * @return Original number of transactions before filtering and limiting
      */
-    public int getTxCount () {
+    public int getTxCount() {
         return txCount;
     }
 
     /**
      * @return List of transactions associated with this address
      */
-    public List<Transaction> getTransactions () {
+    public List<Transaction> getTransactions() {
         return transactions;
     }
-    
-    
+
 }

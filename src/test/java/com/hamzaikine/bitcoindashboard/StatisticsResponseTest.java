@@ -18,22 +18,22 @@ import static org.junit.Assert.*;
  * @author hamzaikine
  */
 public class StatisticsResponseTest {
-    
+
     public StatisticsResponseTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -45,7 +45,7 @@ public class StatisticsResponseTest {
         BigDecimal expResult = null;
         BigDecimal result = instance.getMarketPriceUSD();
         assertEquals(expResult, result);
-        
+
     }
-    
+
 }

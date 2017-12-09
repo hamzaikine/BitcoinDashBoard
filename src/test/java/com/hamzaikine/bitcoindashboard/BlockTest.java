@@ -18,24 +18,24 @@ import static org.junit.Assert.*;
  * @author hamzaikine
  */
 public class BlockTest {
-    
+
     public BlockTest() {
     }
-    
-    Block bl = new Block(496547,"000000000000000000ada0187d76aa8658f3737bb7e17b2d868ad529fcd02c9b",0,true);
-    
+
+    Block bl = new Block(496547, "000000000000000000ada0187d76aa8658f3737bb7e17b2d868ad529fcd02c9b", 0, true);
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -46,7 +46,7 @@ public class BlockTest {
         String expResult = "000000000000000000ada0187d76aa8658f3737bb7e17b2d868ad529fcd02c9b";
         String result = bl.getHash();
         assertEquals(expResult, result);
-        
+
     }
 
     @Test
@@ -55,7 +55,7 @@ public class BlockTest {
         long expResult = 0L;
         long result = bl.getSize();
         assertEquals(expResult, result);
-       
+
     }
 
     @Test
@@ -64,7 +64,7 @@ public class BlockTest {
         long expResult = 496547;
         long result = bl.getHeight();
         assertEquals(expResult, result);
-       
+
     }
 
     @Test
@@ -73,7 +73,7 @@ public class BlockTest {
         long expResult = 0L;
         long result = bl.getReceivedTime();
         assertEquals(expResult, result);
-        
+
     }
 
     @Test
@@ -82,7 +82,7 @@ public class BlockTest {
         List<Transaction> expResult = null;
         List<Transaction> result = bl.getTransactions();
         assertEquals(expResult, result);
-        
+
     }
-    
+
 }

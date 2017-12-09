@@ -1,6 +1,4 @@
-
 package com.hamzaikine.bitcoindashboard;
-
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,21 +14,20 @@ import java.util.Map;
  * @author hamzaikine
  */
 public class Statistics {
-    
+
     private final String apiCode;
-    
-    public Statistics () {
+
+    public Statistics() {
         this.apiCode = null;
     }
 
-    
     /**
      * Gets the network statistics.
      *
      * @return An instance of the StatisticsResponse class
      * @throws APIException If the server returns an error
      */
-    public StatisticsResponse getStats () throws APIException, IOException {
+    public StatisticsResponse getStats() throws APIException, IOException {
         Map<String, String> params = new HashMap<String, String>();
         params.put("format", "json");
         if (apiCode != null) {
@@ -38,12 +35,7 @@ public class Statistics {
         }
 
         String response = HttpClient.getInstance().get("stats", params);
-        return new StatisticsResponse(response);   
+        return new StatisticsResponse(response);
     }
-    
-    
-    
-    
-    
-    
+
 }

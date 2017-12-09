@@ -18,22 +18,22 @@ import static org.junit.Assert.*;
  * @author hamzaikine
  */
 public class BlockExplorerTest {
-    
+
     public BlockExplorerTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -46,7 +46,7 @@ public class BlockExplorerTest {
         Block expResult = null;
         Block result = instance.getBlock(blockHash);
         assertEquals(expResult, result.getHash());
-        
+
     }
 
     @Test
@@ -57,12 +57,10 @@ public class BlockExplorerTest {
         Integer limit = null;
         Integer offset = null;
         BlockExplorer instance = new BlockExplorer();
-        Address expResult = new Address("","3EhLZarJUNSfV6TWMZY1Nh5mi3FMsdHa5U",0L,0L,0L,0,null);
+        Address expResult = new Address("", "3EhLZarJUNSfV6TWMZY1Nh5mi3FMsdHa5U", 0L, 0L, 0L, 0, null);
         Address result = instance.getAddress(address, filter, limit, offset);
         assertEquals(expResult.getAddress(), result.getAddress());
-        
+
     }
 
-    
-    
 }

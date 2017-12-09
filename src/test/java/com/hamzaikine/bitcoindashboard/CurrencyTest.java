@@ -18,24 +18,24 @@ import static org.junit.Assert.*;
  * @author hamzaikine
  */
 public class CurrencyTest {
-    
-    Currency cr = new Currency(1.0,1.0,"USD");
-    
+
+    Currency cr = new Currency(1.0, 1.0, "USD");
+
     public CurrencyTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -46,7 +46,7 @@ public class CurrencyTest {
         BigDecimal expResult = BigDecimal.valueOf(1.0);
         BigDecimal result = cr.getBuy();
         assertEquals(expResult, result);
-        
+
     }
 
     @Test
@@ -55,7 +55,7 @@ public class CurrencyTest {
         BigDecimal expResult = BigDecimal.valueOf(1.0);
         BigDecimal result = cr.getSell();
         assertEquals(expResult, result);
-        
+
     }
 
     @Test
@@ -64,7 +64,7 @@ public class CurrencyTest {
         String expResult = "USD";
         String result = cr.getSymbol();
         assertEquals(expResult, result);
-        
+
     }
-    
+
 }
