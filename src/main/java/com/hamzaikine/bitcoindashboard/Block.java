@@ -32,7 +32,7 @@ public class Block {
         
     }
     
-    public Block (long height, String hash, long time, boolean mainChain) {
+    public Block (long height, String hash,long time, boolean mainChain) {
         this.height = height;
         this.hash = hash;
         this.time = time;
@@ -84,6 +84,12 @@ public class Block {
      */
     public long getReceivedTime () {
         return receivedTime;
+    }
+     /**
+     * @return The time latest block was received by Blockchain.info
+     */
+    public long getTime () {
+        return time;
     }
      
      

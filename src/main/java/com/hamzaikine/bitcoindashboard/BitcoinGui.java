@@ -171,7 +171,7 @@ public class BitcoinGui extends Application {
 
         //block hash Input
         TextField block_hash = new TextField();
-        block_hash.setPromptText("Block hash");
+        block_hash.setPromptText("Click Find to get the latest block/Enter a block hash");
         GridPane.setConstraints(block_hash, 1, 3);
 
         //block search button
@@ -190,11 +190,11 @@ public class BitcoinGui extends Application {
 
             @Override
             public void handle(ActionEvent e) {
-
+                BlockExplorer be = new BlockExplorer();
                 
                 if (block_hash.getText() != null && !block_hash.getText().trim().isEmpty()) {
                     Block b = null;
-                    BlockExplorer be = new BlockExplorer();
+                    
                     try {
                         b = be.getBlock(block_hash.getText());
                     } catch (APIException ex) {
@@ -204,17 +204,29 @@ public class BitcoinGui extends Application {
                         Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
                    
-                    long size = b.getSize()/1000;
+                    long size = b.getSize();
                     
                     chart.setVisible(false);
                     textArea.setVisible(true);
-                    textArea.setText("Block Height:\t" + b.getHeight() + "\n" + "Block size:\t" + size +" KB"+ "\nPrevious Block hash:\t"
-                            + b.getPreviousBlockHash() + "\n" + "No. Transaction in block:\t" + b.getNTx());
+                    textArea.setText("Block Height:\t" + b.getHeight() + "\n" + "Block size:\t" + size/1000 +" KB"+ "\nPrevious Block hash:\t"
+                            + b.getPreviousBlockHash() + "\n" + "No. Transaction in block:\t" + b.getNTx() +"\nReceived Time:\t"+ new Date(b.getReceivedTime()*1000L));
 
                 } else {
-                    textArea.setVisible(true);
                     chart.setVisible(false);
-                    textArea.setText("Please enter a block hash.\n");
+                    textArea.setVisible(true);
+                    try {
+                        LatestBlock lb = be.getLatestBlock();
+                        textArea.setText("Block Height:\t" + lb.getHeight() + "\nBlock hash:\t"
+                            + lb.getHash() + "\nBlock Index:\t"+ lb.getIndex() +"\nReceived Time:\t"+ new Date(lb.getTime()*1000L) +"\n");
+                            
+                    } catch (APIException ex) {
+                        Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(BitcoinGui.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    
+                    
                 }
             }
         });

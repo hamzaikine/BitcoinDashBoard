@@ -15,20 +15,20 @@ public class LatestBlock  extends Block {
      private List<Long> transactionIndexes;
      
       public LatestBlock (long height, String hash, long time, boolean mainChain, long index, List<Long> transactionIndexes) {
-          super(height,hash,time,mainChain);
+        super(height, hash, time, mainChain);
         this.index = index;
         this.transactionIndexes = transactionIndexes;
     }
+
     
-     public LatestBlock (JsonObject b) {
-        this(b.get("height").getAsLong(), b.get("hash").getAsString(), b.get("time").getAsLong(),true,b.get("block_index").getAsLong(),null);
+    public LatestBlock (JsonObject b) {
+        this(b.get("height").getAsLong(), b.get("hash").getAsString(), b.get("time").getAsLong(), true,b.get("block_index").getAsLong(),null);
 
         transactionIndexes = new ArrayList<Long>();
         for (JsonElement idxElem : b.get("txIndexes").getAsJsonArray()) {
             transactionIndexes.add(idxElem.getAsLong());
         }
     }
-     
      
       /**
      * @return Transaction indexes included in this block
