@@ -10,3 +10,8 @@ A user will be able to:
   as well as being able to navigate to the previous one in the chain
 > Get the current balance of a provided bitcoin address.
 > searching for a single address.
+
+Instructions:
+Download the project to netbeans.
+Right click on the project and click clean and Build before running it.
+NetBeans needs to download dependencies before it gives the ability to run it.
